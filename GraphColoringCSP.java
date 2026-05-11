@@ -2,21 +2,24 @@ import java.util.Scanner;
 
 public class GraphColoringCSP {
 
-    int V;
+    int V, E;
     int[][] graph;
     int[] color;
 
-    public GraphColoringCSP(int v) {
+    // Constructor
+    public GraphColoringCSP(int v, int e) {
         V = v;
+        E = e;
         graph = new int[V][V];
         color = new int[V];
     }
 
-    // Check if color assignment is safe (Branch & Bound)
+    // Check whether color can be assigned
     boolean isSafe(int v, int c) {
 
         for (int i = 0; i < V; i++) {
 
+            // Adjacent vertex has same color
             if (graph[v][i] == 1 && color[i] == c) {
                 return false;
             }
@@ -27,7 +30,7 @@ public class GraphColoringCSP {
     // Backtracking function
     boolean solve(int v, int m) {
 
-        // All vertices colored
+        // All vertices are colored
         if (v == V) {
             return true;
         }
@@ -44,7 +47,7 @@ public class GraphColoringCSP {
                     return true;
                 }
 
-                // Backtracking
+                // Backtrack
                 color[v] = 0;
             }
         }
@@ -52,13 +55,13 @@ public class GraphColoringCSP {
         return false;
     }
 
-    // Print solution
+    // Print result
     void printSolution() {
 
         System.out.println("\nVertex Coloring Result:");
 
         for (int i = 0; i < V; i++) {
-            System.out.println("Vertex " + i + " → Color " + color[i]);
+            System.out.println("Vertex " + i + " ---> Color " + color[i]);
         }
     }
 
@@ -66,22 +69,34 @@ public class GraphColoringCSP {
 
         Scanner sc = new Scanner(System.in);
 
+        // Input vertices
         System.out.print("Enter number of vertices: ");
         int V = sc.nextInt();
 
-        GraphColoringCSP g = new GraphColoringCSP(V);
+        // Input edges
+        System.out.print("Enter number of edges: ");
+        int E = sc.nextInt();
 
+        GraphColoringCSP g = new GraphColoringCSP(V, E);
+
+        // Input colors
         System.out.print("Enter number of colors: ");
         int m = sc.nextInt();
 
-        System.out.println("Enter adjacency matrix:");
+        System.out.println("Enter edges (source destination):");
 
-        for (int i = 0; i < V; i++) {
-            for (int j = 0; j < V; j++) {
-                g.graph[i][j] = sc.nextInt();
-            }
+        // Input edges
+        for (int i = 0; i < E; i++) {
+
+            int src = sc.nextInt();
+            int dest = sc.nextInt();
+
+            // Undirected graph
+            g.graph[src][dest] = 1;
+            g.graph[dest][src] = 1;
         }
 
+        // Solve graph coloring problem
         if (g.solve(0, m)) {
             g.printSolution();
         } else {
@@ -90,4 +105,4 @@ public class GraphColoringCSP {
 
         sc.close();
     }
-} 
+}
